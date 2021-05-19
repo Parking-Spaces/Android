@@ -1,39 +1,50 @@
 package com.example.parkingspaces;
 
-import android.app.Activity;
+import android.support.v4.app.*;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import java.util.ArrayList;
 
-
-public class MainActivity extends Activity  {
-    Button b1,b2;
-    EditText ed1,ed2;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        b1 = (Button)findViewById(R.id.button);
-        ed1 = (EditText)findViewById(R.id.editText);
-        ed2 = (EditText)findViewById(R.id.editText2);
+        ViewPager viewPager = findViewById(R.id.viewPager);
 
-        b2 = (Button)findViewById(R.id.button2);
+        AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(new LoginFragment());
+        pagerAdapter.addFragment(new RegisterFragment());
+        viewPager.setAdapter(pagerAdapter);
+    }
+    static class AuthenticationPagerAdapter extends FragmentPagerAdapter {
 
-        b1.setOnClickListener(v -> {
-            if(ed1.getText().toString().equals("admin") &&
-                    ed2.getText().toString().equals("admin")) {
-                Toast.makeText(getApplicationContext(),
-                        "Redirecting...",Toast.LENGTH_SHORT).show();
-            }
+        private final ArrayList<Fragment> fragmentList = new ArrayList<>();
 
-            else
-                Toast.makeText(getApplicationContext(), "Wrong credentials",Toast.LENGTH_SHORT).show();
-        });
+        public AuthenticationPagerAdapter(FragmentManager manager) {
 
-        b2.setOnClickListener(v -> finish());
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+
+            return fragmentList.get(i);
+        }
+
+        @Override
+        public int getCount() {
+
+            return fragmentList.size();
+        }
+
+        void addFragment(Fragment fragment) {
+
+            fragmentList.add(fragment);
+        }
     }
 }
