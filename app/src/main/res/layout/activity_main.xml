@@ -45,7 +45,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:fontFamily="@font/indigo_daisy"
         android:text="@string/available_spaces"
         android:textSize="30sp" />
@@ -63,63 +63,57 @@
 
     <ImageView
         android:id="@+id/slot1"
-        android:layout_width="130dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/slot3"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="40dp"
-        android:src="@drawable/slot"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/slot2"
-        android:layout_width="130dp"
-        android:layout_height="80dp"
-        android:layout_above="@+id/slot4"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="40dp"
-        android:layout_toStartOf="@+id/slot1"
-        android:layout_toLeftOf="@+id/slot1"
-        android:src="@drawable/slot"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/slot3"
-        android:layout_width="130dp"
-        android:layout_height="80dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/slot"
-        tools:ignore="ContentDescription" />
-
-
-    <ImageView
-        android:id="@+id/slot4"
-        android:layout_width="130dp"
+        android:layout_width="120dp"
         android:layout_height="80dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="80dp"
-        android:layout_toStartOf="@+id/slot3"
-        android:layout_toLeftOf="@+id/slot3"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="40dp"
         android:src="@drawable/slot"
         tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/slot2"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:src="@drawable/slot"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        tools:ignore="ContentDescription"/>
+
+    <ImageView
+        android:id="@+id/slot3"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:src="@drawable/slot"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="150dp"/>
+
+    <ImageView
+        android:id="@+id/slot4"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:src="@drawable/slot"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="150dp"/>
+
 
 </RelativeLayout>

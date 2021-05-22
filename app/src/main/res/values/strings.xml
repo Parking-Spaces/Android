@@ -16,4 +16,9 @@
     <string name="got_to_login">Already Have An Account? Sign In</string>
     <string name="create_register">Don`t Have An Account? Create one</string>
     <string name="available_spaces">Available Spaces: </string>
+    <string name="reservation">Reservation</string>
+    <string name="profile">Profile</string>
+    <string name="show_reservations">Show Reservations</string>
+    <string name="logout">Logout</string>
+    <string name="view_profile">View Profile</string>
 </resources>
