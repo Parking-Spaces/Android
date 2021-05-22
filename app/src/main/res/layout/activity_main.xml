@@ -4,11 +4,122 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerInParent="true"
     tools:context=".MainActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <Button
+        android:id="@+id/menu"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="280dp"
+        android:layout_marginRight="280dp"
+        android:background="@drawable/menu" />
+
+    <TextView
+        android:id="@+id/main"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="120dp"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="10dp"
+        android:fontFamily="@font/indigo_daisy"
+        android:text="@string/app_name"
+        android:textSize="40sp"
+        android:layout_alignParentLeft="true" />
+
+    <TextView
+        android:id="@+id/available"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/indigo_daisy"
+        android:text="@string/available_spaces"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/available"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/available"
+        android:textSize="20sp"
+        android:fontFamily="@font/indigo_daisy" />
+
+    <ImageView
+        android:id="@+id/slot1"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/slot3"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/slot2"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/slot4"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="40dp"
+        android:layout_toStartOf="@+id/slot1"
+        android:layout_toLeftOf="@+id/slot1"
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/slot3"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="80dp"
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription" />
+
+
+    <ImageView
+        android:id="@+id/slot4"
+        android:layout_width="130dp"
+        android:layout_height="80dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="80dp"
+        android:layout_toStartOf="@+id/slot3"
+        android:layout_toLeftOf="@+id/slot3"
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>
