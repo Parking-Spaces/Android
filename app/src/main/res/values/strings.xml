@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Parking Spaces</string>
-    <string name="start">Start</string>
-    <string name="available_spaces">Available Spaces: </string>
-    <string name="make_reservation">Make Reservation</string>
-    <string name="show_reservations">Show Reservations</string>
-    <string name="logout">Logout</string>
-    <string name="group2">Contact Us: grupo2CNSV@gmail.com</string>
-</resources>
