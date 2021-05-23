@@ -79,7 +79,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\Carlos Silva\AndroidStudioProjects\ParkingSpaces\app\src\main\res\mipmap-xxxhdpi\parking.jpg" />
+                                                <entry key="imagePath" value="C:\Users\Carlos Silva\AndroidStudioProjects\ParkingSpaces\app\src\main\res\drawable-v24\parking.png" />
+                                                <entry key="scalingPercent" value="101" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -112,7 +113,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="3dc9dc" />
+                                      <entry key="backgroundColor" value="bebed2" />
                                       <entry key="outputName" value="ic_parking" />
                                     </map>
                                   </option>
@@ -307,7 +308,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/exit_to_app/baseline_exit_to_app_24.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material/icons/materialicons/info/baseline_info_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -317,8 +318,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="262626" />
-                            <entry key="outputName" value="ic_logout" />
+                            <entry key="color" value="3576db" />
+                            <entry key="outputName" value="ic_info" />
                             <entry key="sourceFile" value="C:\Users\Carlos Silva\AndroidStudioProjects\ParkingSpaces" />
                           </map>
                         </option>

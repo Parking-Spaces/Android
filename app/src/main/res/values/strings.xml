@@ -1,24 +1,9 @@
 <resources>
     <string name="app_name">Parking Spaces</string>
-    <string name="app_name_login">Login to Parking Spaces</string>
-    <string name="swipe_left_for_register">Swipe Left for Register</string>
-    <string name="swipe_right_for_login">Swipe Right for Login</string>
-    <string name="login">Login</string>
-    <string name="sing_in">Sing In</string>
-    <string name="register">Register</string>
-    <string name="sing_up">Sing Up</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="re_type_password">Re-type Password</string>
-    <string name="name">Username</string>
-    <string name="email">Email address</string>
-    <string name="logo" />
-    <string name="got_to_login">Already Have An Account? Sign In</string>
-    <string name="create_register">Don`t Have An Account? Create one</string>
+    <string name="start">Start</string>
     <string name="available_spaces">Available Spaces: </string>
-    <string name="reservation">Reservation</string>
-    <string name="profile">Profile</string>
+    <string name="make_reservation">Make Reservation</string>
     <string name="show_reservations">Show Reservations</string>
     <string name="logout">Logout</string>
-    <string name="view_profile">View Profile</string>
+    <string name="group2">Contact Us: grupo2CNSV@gmail.com</string>
 </resources>

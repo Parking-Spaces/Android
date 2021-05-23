@@ -7,113 +7,111 @@
     android:layout_centerInParent="true"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/menu"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_alignParentEnd="true"
+    <ImageView
+        android:id="@+id/info"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="280dp"
-        android:layout_marginRight="280dp"
-        android:background="@drawable/menu" />
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_info"
+        tools:ignore="ContentDescription"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp" />
 
     <TextView
         android:id="@+id/main"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="120dp"
-        android:layout_marginLeft="120dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="10dp"
-        android:fontFamily="@font/indigo_daisy"
-        android:text="@string/app_name"
-        android:textSize="40sp"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:id="@+id/available"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/main"
-        android:layout_alignParentStart="true"
+        android:layout_marginLeft="20dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="60dp"
         android:fontFamily="@font/indigo_daisy"
-        android:text="@string/available_spaces"
-        android:textSize="30sp" />
-
-    <TextView
-        android:id="@+id/count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/available"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/available"
-        android:textSize="20sp"
-        android:fontFamily="@font/indigo_daisy" />
+        android:layout_below="@+id/info"
+        android:text="@string/app_name"
+        android:textSize="60sp"
+        android:layout_marginStart="20dp"
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:id="@+id/slot1"
         android:layout_width="120dp"
         android:layout_height="80dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
+        android:layout_below="@+id/main"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="40dp"
         android:src="@drawable/slot"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        android:layout_marginStart="40dp"/>
 
     <ImageView
         android:id="@+id/slot2"
         android:layout_width="120dp"
         android:layout_height="80dp"
-        android:src="@drawable/slot"
+        android:layout_below="@+id/main"
+        android:layout_marginTop="40dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginRight="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="40dp"
-        tools:ignore="ContentDescription"/>
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp" />
 
     <ImageView
         android:id="@+id/slot3"
         android:layout_width="120dp"
         android:layout_height="80dp"
-        android:src="@drawable/slot"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="40dp"
+        android:layout_below="@+id/slot1"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="150dp"/>
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription"
+        android:layout_marginStart="40dp" />
 
     <ImageView
         android:id="@+id/slot4"
         android:layout_width="120dp"
         android:layout_height="80dp"
-        android:src="@drawable/slot"
+        android:layout_below="@+id/slot2"
+        android:layout_marginTop="40dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginRight="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="150dp"/>
+        android:src="@drawable/slot"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp" />
 
 
+    <Button
+        android:id="@+id/show_reservations"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/slot4"
+        android:background="@drawable/button_custom"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@android:color/white"
+        android:text="@string/show_reservations"/>
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_below="@id/show_reservations"
+        android:background="@drawable/button_custom"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_regular"
+        android:textColor="@android:color/white"
+        android:text="@string/logout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/logout"
+        android:text="@string/group2"/>
 </RelativeLayout>
