@@ -8,6 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.examples.parkingspaces.ParkingSpacesGrpc;
+
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,16 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
         info.setOnClickListener(v -> Toast.makeText(this, showInfo, Toast.LENGTH_LONG).show());
 
-         /*
+
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
                 .usePlaintext()
                 .build();
 
-        ParkingSpacesGrpc.ParkingSpacesStub stub = ParkingSpacesGrpc.newStub(channel);
-        ParkingNotificationsGrpc.ParkingNotificationsStub stub_notification = ParkingNotificationsGrpc.newStub(channel);
-        ParkingSpaceAdministrationGrpc.ParkingSpaceAdministrationStub stub_administration = ParkingSpaceAdministrationGrpc.newStub(channel);
+        ParkingSpacesGrpc.ParkingSpacesStub parkingSpacesStub = ParkingSpacesGrpc.newStub(channel);
 
-         request = ParkingSpacesGrpc.getFetchAllParkingStatesMethod(req);
-        */
+
+
     }
 }

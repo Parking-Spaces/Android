@@ -1,9 +1,5 @@
-plugins {
-    id 'com.android.application'
-
-    // ASSUMES GRADLE 2.12 OR HIGHER. Use plugin version 0.7.5 with earlier gradle versions
-    id 'com.google.protobuf' version '0.8.8'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
 
 // Feel free to delete the comment at the next line. It is just for safely
 // updating the version in our release process.
@@ -30,6 +26,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        disable 'GoogleAppIndexingWarning', 'HardcodedText', 'InvalidPackage'
+        textReport true
+        textOutput "stdout"
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -42,6 +43,7 @@ dependencies {
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     compileOnly "org.apache.tomcat:annotations-api:6.0.53"
 
+    implementation "io.grpc:grpc-okhttp:${grpcVersion}" // CURRENT_GRPC_VERSION
     // examples/advanced need this for JsonFormat
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     implementation 'com.android.support:multidex:1.0.3'
@@ -68,24 +70,12 @@ protobuf {
     generateProtoTasks {
         all().each { task ->
             task.builtins {
-                java { }
+                java { option 'lite' }
             }
             task.plugins {
-                grpc { }
+                grpc { // Options added to --grpc_out
+                option 'lite' }
             }
-        }
-    }
-}
-
-// Inform IDEs like IntelliJ IDEA, Eclipse or NetBeans about the generated code.
-sourceSets {
-    main {
-        java {
-            srcDirs 'build/generated/source/proto/main/grpc'
-            srcDirs 'build/generated/source/proto/main/java'
-        }
-        resources {
-            srcDirs 'src/main/resources'
         }
     }
 }
