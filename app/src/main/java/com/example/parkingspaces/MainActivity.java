@@ -1,37 +1,35 @@
 package com.example.parkingspaces;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.examples.parkingspaces.ParkingSpaceStatus;
 import com.examples.parkingspaces.ParkingSpacesGrpc;
+import com.examples.parkingspaces.ParkingSpacesRq;
+import com.examples.parkingspaces.SpaceStates;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 
 
 public class MainActivity extends AppCompatActivity {
 
     ImageView info;
-    Button slot1, slot2, slot3, slot4;
-    //EditText slot,plate;
+    Button slot1, slot2, slot3, slot4, cancelReservation, exit;
     TextView show;
-    EditText cancelReservation;
+
+    final String SERVER_ADDRESS = "0.0.0.0";
+    final int PORT = 50051;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         info = findViewById(R.id.info);
         slot1 = findViewById(R.id.slot1);
         slot2 = findViewById(R.id.slot2);
@@ -40,37 +38,68 @@ public class MainActivity extends AppCompatActivity {
 
         show = findViewById(R.id.show_reservations);
         cancelReservation = findViewById(R.id.cancelReservation);
-        String showInfo = "○ Click on one of the slots to make a reservation\n ○ Slot Green - Free Space\n ○ Slot Yellow - Reserved Slot\n ○ Slot Red - Occupied Slot\n";
+        exit = findViewById(R.id.exit);
 
-        info.setOnClickListener(v -> Toast.makeText(this, showInfo, Toast.LENGTH_LONG).show());
-
-
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50051)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
                 .usePlaintext()
                 .build();
 
-        ParkingSpacesGrpc.ParkingSpacesStub parkingSpacesStub = ParkingSpacesGrpc.newStub(channel);
-
-
-
+        fetchAllSpaces(channel);
     }
 
-    // Creates and displays a notification
-    @SuppressWarnings("deprecation")
-    private void addNotification(String notification) {
-        // Builds your notification
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.parking)
-                .setContentTitle("Parking Spaces")
-                .setContentText(notification);
+    private void fetchAllSpaces(ManagedChannel channel) {
+        ParkingSpacesGrpc.ParkingSpacesStub parkingSpacesStub = ParkingSpacesGrpc.newStub(channel);
+        parkingSpacesStub.fetchAllParkingStates(ParkingSpacesRq.newBuilder().build(), new StreamObserver<ParkingSpaceStatus>(){
 
-        // Creates the intent needed to show the notification
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
+            @Override
+            public void onNext(ParkingSpaceStatus initialState) {
 
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
+                switch (initialState.getSpaceID()) {
+
+                    case 1:
+                        changeButtonColor(slot1, initialState.getSpaceState());
+                        break;
+
+                    case 2:
+                        changeButtonColor(slot2, initialState.getSpaceState());
+                        break;
+
+                    case 3:
+                        changeButtonColor(slot3, initialState.getSpaceState());
+                        break;
+
+                    case 4:
+                        changeButtonColor(slot4, initialState.getSpaceState());
+                        break;
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+            }
+
+            @Override
+            public void onCompleted() {
+                startParking(channel, parkingSpacesStub);
+            }
+        });
+    }
+
+    private void changeButtonColor(Button button, SpaceStates spaceState) {
+
+        if(spaceState == SpaceStates.OCCUPIED)
+            button.setBackgroundColor(Color.RED);
+
+        else if(spaceState == SpaceStates.RESERVED)
+            button.setBackgroundColor(Color.YELLOW);
+
+        else
+            button.setBackgroundColor(Color.RED);
+    }
+
+    public void startParking(ManagedChannel channel, ParkingSpacesGrpc.ParkingSpacesStub async) {
+
+        // Both rpc Notifications running
+
     }
 }
