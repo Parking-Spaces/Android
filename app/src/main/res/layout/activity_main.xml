@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/info"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_info"
+        tools:ignore="ContentDescription"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp" />
+
+    <TextView
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentLeft="true"
+        android:fontFamily="@font/indigo_daisy"
+        android:layout_below="@+id/info"
+        android:text="@string/app_name"
+        android:textSize="50sp"
+        android:layout_marginStart="20dp"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/slot1"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/main"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:src="@drawable/slot"
+        android:text="Slot 1"
+        tools:ignore="ContentDescription"
+        android:layout_marginStart="40dp" />
+
+    <Button
+        android:id="@+id/slot2"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/main"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:src="@drawable/slot"
+        android:text="Slot 2"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp" />
+
+    <Button
+        android:id="@+id/slot3"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/slot1"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="40dp"
+        android:src="@drawable/slot"
+        android:text="Slot 3"
+        tools:ignore="ContentDescription"
+        android:layout_marginStart="40dp" />
+
+    <Button
+        android:id="@+id/slot4"
+        android:layout_width="120dp"
+        android:layout_height="80dp"
+        android:layout_below="@+id/slot2"
+        android:layout_marginTop="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:src="@drawable/slot"
+        android:text="Slot 4"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp" />
+
+
+    <TextView
+        android:id="@+id/show_reservations"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/slot4"
+        android:background="@drawable/rect_text"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"/>
+
+    <Button
+        android:id="@+id/cancelReservation"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show_reservations"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="40dp"
+        android:src="@drawable/slot"
+        android:text="Cancel Reservation"
+        tools:ignore="ContentDescription"
+        android:layout_marginStart="40dp"
+        android:background="@color/colorAccent"/>
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show_reservations"
+        android:layout_marginTop="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:src="@drawable/slot"
+        android:text="Exit"
+        tools:ignore="ContentDescription"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="40dp"
+        android:background="@color/colorAccent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp"
+        android:textSize="12sp"
+        android:layout_below="@+id/cancelReservation"
+        android:text="@string/group2"/>
+</RelativeLayout>
