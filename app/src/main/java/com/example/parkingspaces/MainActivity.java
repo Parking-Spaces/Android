@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView info;
     Button slot1, slot2, slot3, slot4, cancelReservation, exit;
     TextView show;
-    final String SERVER_ADDRESS = "0.0.0.0";
+    //Para conectar ao servidor, encontra o IP na rede local do teu PC e coloca-o aqui
+    final String SERVER_ADDRESS = "192.168.1.158";
     final int PORT = 50051;
 
     @Override
@@ -101,14 +102,18 @@ public class MainActivity extends AppCompatActivity {
         ParkingNotificationsGrpc.ParkingNotificationsStub parkingNotificationsStub = ParkingNotificationsGrpc.newStub(channel);
         ParkingSpacesRq request = ParkingSpacesRq.newBuilder().build();
 
-        info.setEnabled(true);
-        exit.setEnabled(true);
+        MainActivity.this.runOnUiThread(() -> {
+            info.setEnabled(true);
+            exit.setEnabled(true);
+        });
 
         parkingNotificationsStub.subscribeToParkingStates(request, new StreamObserver<ParkingSpaceStatus>() {
             @Override
             public void onNext(ParkingSpaceStatus state) {
                 //Updates The Parking State
-                updateParkStatus(state);
+                MainActivity.this.runOnUiThread(() -> {
+                    updateParkStatus(state);
+                });
             }
 
             @Override
@@ -118,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCompleted() {
-
+                System.out.println("Disconnected");
             }
         });
 
