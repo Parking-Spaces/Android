@@ -41,6 +41,7 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/parkingspaces/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/parkingspaces/MainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/proto/parkingspaces.proto" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/proto/parkingspaces.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/button_custom.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/login_button.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/drawable/password.xml" beforeDir="false" />
@@ -61,8 +62,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -193,10 +194,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="488" y="70" key="#com.intellij.ide.util.MemberChooser" timestamp="1622248927616">
+    <state x="488" y="70" key="#com.intellij.ide.util.MemberChooser" timestamp="1622331758524">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="488" y="70" key="#com.intellij.ide.util.MemberChooser/0.0.1366.728@0.0.1366.728" timestamp="1622248927616" />
+    <state x="488" y="70" key="#com.intellij.ide.util.MemberChooser/0.0.1366.728@0.0.1366.728" timestamp="1622331758524" />
     <state x="413" y="111" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1622163693269">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -205,17 +206,21 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="275" y="84" key="Vcs.Push.Dialog.v2/0.0.1366.728@0.0.1366.728" timestamp="1622076859123" />
+    <state x="0" y="112" key="caller.chooser.dialog" timestamp="1622337721467">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="0" y="112" key="caller.chooser.dialog/0.0.1366.728@0.0.1366.728" timestamp="1622337721467" />
     <state x="500" y="278" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1622076781692">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="500" y="278" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1622076781692" />
-    <state x="383" y="111" key="refactoring.ChangeSignatureDialog" timestamp="1622250792800">
+    <state x="383" y="111" key="refactoring.ChangeSignatureDialog" timestamp="1622314248548">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="383" y="111" key="refactoring.ChangeSignatureDialog/0.0.1366.728@0.0.1366.728" timestamp="1622250792800" />
-    <state x="339" y="162" key="run.anything.popup" timestamp="1622163525081">
+    <state x="383" y="111" key="refactoring.ChangeSignatureDialog/0.0.1366.728@0.0.1366.728" timestamp="1622314248548" />
+    <state x="339" y="162" key="run.anything.popup" timestamp="1622329883717">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="339" y="162" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1622163525081" />
+    <state x="339" y="162" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1622329883717" />
   </component>
 </project>

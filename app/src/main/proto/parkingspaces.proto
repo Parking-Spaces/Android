@@ -95,6 +95,8 @@ message ParkingSpaceStatus {
 
     SpaceStates spaceState = 3;
 
+    bool fireAlarm = 4;
+
 }
 
 service ParkingSpaceAdministration {
