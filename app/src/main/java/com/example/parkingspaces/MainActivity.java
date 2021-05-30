@@ -30,8 +30,12 @@ import com.examples.parkingspaces.PlateInfo;
 import com.examples.parkingspaces.ReservationCancelResponse;
 import com.examples.parkingspaces.ReservationResponse;
 import com.examples.parkingspaces.ReservationState;
+import com.examples.parkingspaces.ReserveState;
 import com.examples.parkingspaces.ReserveStatus;
 import com.examples.parkingspaces.SpaceStates;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -46,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
     //Para conectar ao servidor, encontra o IP na rede local do teu PC e coloca-o aqui
     final String SERVER_ADDRESS = "192.168.1.158";
     final int PORT = 50051;
+
+    private ManagedChannel channel;
+    private ParkingNotificationsGrpc.ParkingNotificationsStub notification;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
         disableButtons();
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
+        this.channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
                 .usePlaintext()
                 .build();
+
+        this.notification = ParkingNotificationsGrpc.newStub(this.channel);
 
         initialUpdatePark(channel);
     }
@@ -78,11 +88,14 @@ public class MainActivity extends AppCompatActivity {
     private void initialUpdatePark(ManagedChannel channel) {
         ParkingSpacesGrpc.ParkingSpacesStub parkingSpacesStub = ParkingSpacesGrpc.newStub(channel);
 
-        parkingSpacesStub.fetchAllParkingStates(ParkingSpacesRq.newBuilder().build(), new StreamObserver<ParkingSpaceStatus>(){
+
+        parkingSpacesStub.fetchAllParkingStates(ParkingSpacesRq.newBuilder().build(), new StreamObserver<ParkingSpaceStatus>() {
+
+            List<ParkingSpaceStatus> status = new LinkedList<>();
 
             @Override
             public void onNext(ParkingSpaceStatus initialState) {
-                updateParkStatus(initialState);
+                status.add(initialState);
             }
 
             @Override
@@ -92,42 +105,41 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCompleted() {
-                startParking(channel, parkingSpacesStub);
+                runOnUiThread(() -> {
+                    startParking(channel, parkingSpacesStub, status);
+                });
             }
         });
     }
 
-    public void startParking(ManagedChannel channel, ParkingSpacesGrpc.ParkingSpacesStub async) {
+    public void startParking(ManagedChannel channel, ParkingSpacesGrpc.ParkingSpacesStub async, List<ParkingSpaceStatus> initial) {
 
-        ParkingNotificationsGrpc.ParkingNotificationsStub parkingNotificationsStub = ParkingNotificationsGrpc.newStub(channel);
-        ParkingSpacesRq request = ParkingSpacesRq.newBuilder().build();
+        for (ParkingSpaceStatus parkingSpaceStatus : initial) {
+            updateParkStatus(parkingSpaceStatus);
+        }
 
-        MainActivity.this.runOnUiThread(() -> {
-            info.setEnabled(true);
-            exit.setEnabled(true);
-        });
+        info.setEnabled(true);
+        exit.setEnabled(true);
 
-        parkingNotificationsStub.subscribeToParkingStates(request, new StreamObserver<ParkingSpaceStatus>() {
-            @Override
-            public void onNext(ParkingSpaceStatus state) {
-                //Updates The Parking State
-                MainActivity.this.runOnUiThread(() -> {
-                    updateParkStatus(state);
+        this.notification.subscribeToParkingStates(ParkingSpacesRq.newBuilder().build(),
+                new StreamObserver<ParkingSpaceStatus>() {
+                    @Override
+                    public void onNext(ParkingSpaceStatus value) {
+                        System.out.println("RECEIVED UPDATE");
+                        runOnUiThread(() -> updateParkStatus(value));
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                    }
                 });
-            }
 
-            @Override
-            public void onError(Throwable t) {
-                throw new RuntimeException(t);
-            }
-
-            @Override
-            public void onCompleted() {
-                System.out.println("Disconnected");
-            }
-        });
-
-        clientActions(channel,async,parkingNotificationsStub);
+        clientActions(channel, async);
     }
 
     /*
@@ -137,10 +149,14 @@ public class MainActivity extends AppCompatActivity {
      */
     public void updateParkStatus(ParkingSpaceStatus update) {
 
-        if(update.getFireAlarm()) {
+        if (update.getFireAlarm()) {
             String fire = "There's An Fire On Parking Site Number " + update.getSpaceID() + " \n";
             addNotification(fire);
+
+            return;
         }
+
+        System.out.println("Updating... spot " + update.getSpaceID() + " " + update.getSpaceState());
 
         switch (update.getSpaceID()) {
 
@@ -166,16 +182,12 @@ public class MainActivity extends AppCompatActivity {
     // Change The Buttons Color
     public void changeButtonColor(Button button, SpaceStates spaceState) {
 
-        if(spaceState == SpaceStates.OCCUPIED) {
+        if (spaceState == SpaceStates.OCCUPIED) {
             button.setBackgroundColor(Color.RED);
-        }
-
-        else if(spaceState == SpaceStates.RESERVED) {
+        } else if (spaceState == SpaceStates.RESERVED) {
             cancelReservation.setEnabled(true);
             button.setBackgroundColor(Color.YELLOW);
-        }
-
-        else {
+        } else {
             button.setEnabled(true);
             button.setBackgroundColor(Color.GREEN);
         }
@@ -188,31 +200,34 @@ public class MainActivity extends AppCompatActivity {
         To Cancel A Reservation Just Press The "Cancel Reservation" Button
         To Exit The App Just Press "Exit" Button
      */
-    public void clientActions(ManagedChannel channel, ParkingSpacesGrpc.ParkingSpacesStub async, ParkingNotificationsGrpc.ParkingNotificationsStub notification) {
-
-        ParkingSpaceAdministrationGrpc.ParkingSpaceAdministrationStub admin = ParkingSpaceAdministrationGrpc.newStub(channel);
+    public void clientActions(ManagedChannel channel, ParkingSpacesGrpc.ParkingSpacesStub async) {
 
         String showInfo = "○ Click on one of the slots to make a reservation\n ○ Slot Green - Free Space\n ○ Slot Yellow - Reserved Slot\n ○ Slot Red - Occupied Slot\n";
+
+        System.out.println("What are we doing?");
+
         info.setOnClickListener(v -> Toast.makeText(this, showInfo, Toast.LENGTH_LONG).show());
 
-        slot1.setOnClickListener(v -> attemptToReserve(admin, async, notification, 1));
+        slot1.setOnClickListener(v -> attemptToReserve(async, 1));
 
-        slot2.setOnClickListener(v -> attemptToReserve(admin, async, notification, 2));
+        slot2.setOnClickListener(v -> attemptToReserve(async, 2));
 
-        slot3.setOnClickListener(v -> attemptToReserve(admin, async, notification, 3));
+        slot3.setOnClickListener(v -> attemptToReserve(async, 3));
 
-        slot4.setOnClickListener(v -> attemptToReserve(admin, async, notification,4));
+        slot4.setOnClickListener(v -> attemptToReserve(async, 4));
 
-        cancelReservation.setOnClickListener( v -> clientCancelReservation(async));
+        cancelReservation.setOnClickListener(v -> clientCancelReservation(async));
 
-        exit.setOnClickListener(v-> {
+        System.out.println("Teste 2");
+
+        exit.setOnClickListener(v -> {
             channel.shutdown();
             finish();
             System.exit(0);
         });
     }
 
-    private void attemptToReserve(ParkingSpaceAdministrationGrpc.ParkingSpaceAdministrationStub admin, ParkingSpacesGrpc.ParkingSpacesStub async, ParkingNotificationsGrpc.ParkingNotificationsStub notify, int slot) {
+    private void attemptToReserve(ParkingSpacesGrpc.ParkingSpacesStub async, int slot) {
 
         final EditText input = new EditText(MainActivity.this);
         LinearLayout.LayoutParams layout = new LinearLayout.LayoutParams(
@@ -231,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
         Button theButton = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        theButton.setOnClickListener(new ReservationListener(admin, async, notify, alertDialog, input, slot));
+        theButton.setOnClickListener(new ReservationListener(async, alertDialog, input, slot));
     }
 
     // To validate The User Input On Reservation
@@ -241,53 +256,48 @@ public class MainActivity extends AppCompatActivity {
         private final EditText input;
         private final int slot;
         private final ParkingSpacesGrpc.ParkingSpacesStub async;
-        private final ParkingNotificationsGrpc.ParkingNotificationsStub notify;
-        private final ParkingSpaceAdministrationGrpc.ParkingSpaceAdministrationStub admin;
 
-        public ReservationListener(ParkingSpaceAdministrationGrpc.ParkingSpaceAdministrationStub admin, ParkingSpacesGrpc.ParkingSpacesStub async, ParkingNotificationsGrpc.ParkingNotificationsStub notify, Dialog dialog, EditText input, int slot) {
-            this.async = async;
-            this.notify = notify;
+        public ReservationListener(ParkingSpacesGrpc.ParkingSpacesStub async, Dialog dialog, EditText input, int slot) {
             this.dialog = dialog;
             this.input = input;
             this.slot = slot;
-            this.admin = admin;
-
+            this.async = async;
         }
 
         @Override
         public void onClick(View v) {
 
             String plate = input.getText().toString();
-            final StringBuffer plateDataResponse = new StringBuffer();
-            PlateInfo p = PlateInfo.newBuilder().setLicensePlate(plate).build();
 
-            admin.isPlateInParkingLot(p, new StreamObserver<PlateData>() {
+            ParkingSpaceReservation request = ParkingSpaceReservation.newBuilder()
+                    .setLicencePlate(plate)
+                    .setSpaceID(slot).build();
+
+            async.attemptToReserveSpace(request, new StreamObserver<ReservationResponse>() {
                 @Override
-                public void onNext(PlateData value) {
-                    plateDataResponse.append(value);
+                public void onNext(ReservationResponse value) {
+                    MainActivity.this.runOnUiThread(() -> handleReservationResponse(value.getResponse(), plate));
                 }
 
                 @Override
                 public void onError(Throwable t) {
-
+                    t.printStackTrace();
                 }
 
                 @Override
                 public void onCompleted() {
-
+                    //Request ended
                 }
             });
 
-            if(plateDataResponse.toString().equals("False")) {
-                String response = reservationSlot(async, plate, slot);
-                if(response.equals("SUCCESSFUL")) {
-                    show.append("The Slot " + slot + " Was Reserved With The Plate " + plate + "\n");
-                    clientWithReservation(notify, plate, slot);
-                    dialog.dismiss();
-                }
-            }
+        }
 
-            else {
+        private void handleReservationResponse(ReserveState state, String plate) {
+            if (state == ReserveState.SUCCESSFUL) {
+                show.append("The Slot " + slot + " Was Reserved With The Plate " + plate + "\n");
+                clientWithReservation(plate, slot);
+                dialog.dismiss();
+            } else {
                 Toast toast = Toast.makeText(MainActivity.this, "Could Not Made The Reservation With The Plate, Please Try Again.", Toast.LENGTH_SHORT);
                 View view = toast.getView();
                 view.setPadding(20, 20, 20, 20);
@@ -297,31 +307,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public String reservationSlot(ParkingSpacesGrpc.ParkingSpacesStub async, String plate, int slot) {
-        final StringBuffer reservationResponse = new StringBuffer();
-        ParkingSpaceReservation reservation = ParkingSpaceReservation.newBuilder().setSpaceID(slot).setLicencePlate(plate).build();
-        async.attemptToReserveSpace(reservation, new StreamObserver<ReservationResponse>() {
-            @Override
-            public void onNext(ReservationResponse value) {
-                reservationResponse.append(value);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-
-            }
-
-            @Override
-            public void onCompleted() {
-
-            }
-        });
-
-        return reservationResponse.toString();
-    }
-
-    public void clientWithReservation(ParkingNotificationsGrpc.ParkingNotificationsStub notification, String plate, int slot) {
+    public void clientWithReservation(String plate, int slot) {
 
         ParkingSpaceReservation reservation = ParkingSpaceReservation.newBuilder().setSpaceID(slot).setLicencePlate(plate).build();
 
@@ -348,26 +334,26 @@ public class MainActivity extends AppCompatActivity {
 
         String notify;
 
-       if(state.getState() == ReservationState.RESERVE_CANCELLED) {
-           notify = "The Reservation Was Canceled.\n";
-           addNotification(notify);
-       }
+        if (state.getState() == ReservationState.RESERVE_CANCELLED) {
+            notify = "The Reservation Was Canceled.\n";
+            addNotification(notify);
+        }
 
-       if(state.getState() == ReservationState.RESERVE_CANCELLED_SPACE_OCCUPIED) {
-           notify = "The Reservation Was Canceled Because Your Space It´s Occupied For Someone Else.\n";
-           addNotification(notify);
+        if (state.getState() == ReservationState.RESERVE_CANCELLED_SPACE_OCCUPIED) {
+            notify = "The Reservation Was Canceled Because Your Space It´s Occupied For Someone Else.\n";
+            addNotification(notify);
 
-       }
+        }
 
-       if(state.getState() == ReservationState.RESERVE_CANCELLED_PARKED_SOMEWHERE_ELSE) {
-           notify = "The Reservation Was Canceled Because You Park Somewhere Else.\n";
-           addNotification(notify);
-       }
+        if (state.getState() == ReservationState.RESERVE_CANCELLED_PARKED_SOMEWHERE_ELSE) {
+            notify = "The Reservation Was Canceled Because You Park Somewhere Else.\n";
+            addNotification(notify);
+        }
 
-       if(state.getState() == ReservationState.RESERVE_CONCLUDED) {
-           notify = "Reservation Concluded.\n";
-           addNotification(notify);
-       }
+        if (state.getState() == ReservationState.RESERVE_CONCLUDED) {
+            notify = "Reservation Concluded.\n";
+            addNotification(notify);
+        }
     }
 
 
@@ -411,38 +397,32 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(Util.isNumeric(input.getText().toString())) {
+            if (Util.isNumeric(input.getText().toString())) {
                 String slot = input.getText().toString();
-                if((slot.equals("1")) || (slot.equals("2")) || (slot.equals("3")) || (slot.equals("4"))) {
+                if ((slot.equals("1")) || (slot.equals("2")) || (slot.equals("3")) || (slot.equals("4"))) {
                     String responseS = cancelReservationSlot(async, slot, 1);
-                    if(responseS.equals("CANCELLED")) {
+                    if (responseS.equals("CANCELLED")) {
                         String s = "The Vehicle in The Slot " + slot + " Left.\n";
                         show.append(s);
                         dialog.dismiss();
                     }
-                }
-
-                else {
+                } else {
                     Toast toast = Toast.makeText(MainActivity.this, "Please Introduce An Valid Slot, Between 1 and 4, Or a Plate.\n", Toast.LENGTH_SHORT);
                     View view = toast.getView();
                     view.setPadding(20, 20, 20, 20);
                     view.setBackgroundResource(R.color.colorPrimaryDark);
                     toast.show();
                 }
-            }
-
-            else {
+            } else {
                 String p = input.getText().toString();
-                if(Util.isPlate(p)){
+                if (Util.isPlate(p)) {
                     String responseP = cancelReservationSlot(async, p, 2);
-                    if(responseP.equals("CANCELLED")) {
+                    if (responseP.equals("CANCELLED")) {
                         String s = "The Plate " + p + " Left The Park.\n";
                         show.append(s);
                         dialog.dismiss();
                     }
-                }
-
-                else {
+                } else {
                     Toast toast = Toast.makeText(MainActivity.this, "Incorrect Plate Format, Please Try Again.", Toast.LENGTH_SHORT);
                     View view = toast.getView();
                     view.setPadding(20, 20, 20, 20);
@@ -459,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
         ParkingSpaceReservation reservation;
 
         // Cancel The Reservation Using Slot
-        if(type == 1) {
+        if (type == 1) {
             reservation = ParkingSpaceReservation.newBuilder().setSpaceID(Integer.parseInt(input)).build();
             async.cancelSpaceReservation(reservation, new StreamObserver<ReservationCancelResponse>() {
                 @Override
