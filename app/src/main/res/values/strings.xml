@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">Parking Spaces</string>
-    <string name="showReservation">Reservations:</string>
-    <string name="cancelReservation">Insert Slot Number To Cancel Reservation: </string>
-    <string name="slot">Insert Slot Number</string>
-    <string name="plat">Insert Plat</string>
-    <string name="group2">Contact Us: grupo2CNSV@gmail.com</string>
-</resources>
