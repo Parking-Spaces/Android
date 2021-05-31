@@ -9,79 +9,86 @@ package parkingspaces;
 
 service ParkingSpaces {
 
-    //Fetch the current state of all the spaces in the parking lot
-    rpc fetchAllParkingStates(ParkingSpacesRq) returns (stream ParkingSpaceStatus);
+  //Fetch the current state of all the spaces in the parking lot
+  rpc fetchAllParkingStates(ParkingSpacesRq) returns (stream ParkingSpaceStatus);
 
-    //Attempt to reserve a parking space in the parking lot
-    rpc attemptToReserveSpace(ParkingSpaceReservation) returns (ReservationResponse);
+  //Attempt to reserve a parking space in the parking lot
+  rpc attemptToReserveSpace(ParkingSpaceReservation) returns (ReservationResponse);
 
-    //Cancel the reservation for a space
-    rpc cancelSpaceReservation(ParkingSpaceReservation) returns (ReservationCancelResponse);
+  //Cancel the reservation for a space
+  rpc cancelSpaceReservation(ReservationCancelRequest) returns (ReservationCancelResponse);
 
 }
 
 service ParkingNotifications {
 
-    //Subscribe to the manager to receive updates on parking spaces that have been occupied / reserved
-    rpc subscribeToParkingStates(ParkingSpacesRq) returns (stream ParkingSpaceStatus);
+  //Subscribe to the manager to receive updates on parking spaces that have been occupied / reserved
+  rpc subscribeToParkingStates(ParkingSpacesRq) returns (stream ParkingSpaceStatus);
 
-    //Subscribe to the state of a certain, already made reservation.
-    //If someone parks in the space or you park in another space, there will be a notification immediately
-    rpc subscribeToReservationState(ParkingSpaceReservation) returns (stream ReserveStatus);
+  //Subscribe to the state of a certain, already made reservation.
+  //If someone parks in the space or you park in another space, there will be a notification immediately
+  rpc subscribeToReservationState(ParkingSpaceReservation) returns (stream ReserveStatus);
 }
 
 enum SpaceStates {
-    OCCUPIED = 0;
-    RESERVED = 1;
-    FREE = 2;
+  OCCUPIED = 0;
+  RESERVED = 1;
+  FREE = 2;
 };
 
 enum ReserveState {
-    SUCCESSFUL = 0;
-    FAILED_LICENSE_PLATE_ALREADY_HAS_RESERVE = 1;
-    FAILED_SPACE_OCCUPIED = 2;
-    FAILED_SPACE_RESERVED = 3;
+  SUCCESSFUL = 0;
+  FAILED_LICENSE_PLATE_ALREADY_HAS_RESERVE = 1;
+  FAILED_SPACE_OCCUPIED = 2;
+  FAILED_SPACE_RESERVED = 3;
 };
 
 enum ReservationState {
-    RESERVE_CANCELLED = 0;
-    RESERVE_CANCELLED_SPACE_OCCUPIED = 1;
-    RESERVE_CANCELLED_PARKED_SOMEWHERE_ELSE = 2;
-    RESERVE_CONCLUDED = 3;
+  RESERVE_CANCELLED = 0;
+  RESERVE_CANCELLED_SPACE_OCCUPIED = 1;
+  RESERVE_CANCELLED_PARKED_SOMEWHERE_ELSE = 2;
+  RESERVE_CONCLUDED = 3;
+  RESERVE_CANCELLED_EXPIRED = 4;
 };
 
 enum ReserveCancelState {
-    CANCELLED = 0;
-    NO_RESERVATION_FOR_PLATE = 1;
+  CANCELLED = 0;
+  NO_RESERVATION_FOR_PLATE = 1;
 }
 
 message ParkingSpaceReservation {
 
-    int32 spaceID = 1;
+  int32 spaceID = 1;
 
-    string licencePlate = 2;
+  string licencePlate = 2;
+
+}
+
+message ReservationCancelRequest {
+
+  string licensePlate = 1;
 
 }
 
 message ReservationCancelResponse {
-    int32 spaceID = 1;
+  int32 spaceID = 1;
 
-    ReserveCancelState cancelState = 2;
+  ReserveCancelState cancelState = 2;
 }
 
 message ReservationResponse {
 
-    int32 spaceID = 1;
+  int32 spaceID = 1;
 
-    ReserveState response = 2;
+  ReserveState response = 2;
 
 }
 
 message ReserveStatus {
 
-    int32 spaceID = 1;
+  int32 spaceID = 1;
 
-    ReservationState state = 2;
+  ReservationState state = 2;
 
 }
 
@@ -89,23 +96,23 @@ message ParkingSpacesRq { }
 
 message ParkingSpaceStatus {
 
-    int32 spaceID = 1;
+  int32 spaceID = 1;
+  
+  string spaceSection = 2;
 
-    string spaceSection = 2;
-
-    SpaceStates spaceState = 3;
-
-    bool fireAlarm = 4;
+  SpaceStates spaceState = 3;
+  
+  bool fireAlarm = 4;
 
 }
 
 service ParkingSpaceAdministration {
 
-    rpc isPlateInParkingLot(PlateInfo) returns (PlateData);
+  rpc isPlateInParkingLot(PlateInfo) returns (PlateData);
 
-    rpc currentlyInParkingLot(E) returns (stream PlateData);
+  rpc currentlyInParkingLot(E) returns (stream PlateData);
 
-    //TODO: Add more administrative RPCs
+  //TODO: Add more administrative RPCs
 
 }
 
@@ -114,14 +121,14 @@ message E {
 }
 
 message PlateInfo {
-    string licensePlate = 1;
+  string licensePlate = 1;
 }
 
 message PlateData {
-    bool inParkingLot = 1;
+  bool inParkingLot = 1;
 
-    //This is the timestamp of either the latest entrance, latest exit or 0 if the plate
-    //Was never in the parking lot
-    uint64 timeStamp = 2;
+  //This is the timestamp of either the latest entrance, latest exit or 0 if the plate
+  //Was never in the parking lot
+  uint64 timeStamp = 2;
 
 }
