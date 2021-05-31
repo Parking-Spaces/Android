@@ -1,5 +1,8 @@
 package com.example.parkingspaces;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Util {
 
     public static boolean isNumeric(final String str) {
@@ -19,32 +22,9 @@ public class Util {
 
     public static boolean isPlate(String plate) {
 
-        int numbers = 0, letters = 0;
+        Pattern pattern = Pattern.compile("\\A(\\d{2}-\\d{2}-[A-Z]{2}|\\d{2}-[A-Z]{2}-\\d{2}|[A-Z]{2}-\\d{2}-\\d{2})\\z");
+        Matcher matcher =  pattern.matcher(plate);
 
-        if (plate.length() != 8 || plate.charAt(2) != '-' || plate.charAt(5) != '-')
-            return false;
-
-        for (int i= 0; i < plate.length(); i++) {
-
-            if (Character.isLetter(plate.charAt(i))) {
-                if (plate.charAt(i) == (plate.toUpperCase().charAt(i))) {
-                    ++letters;
-                    continue;
-                }
-            }
-            if (Character.isDigit(plate.charAt(i)))
-                ++numbers;
-
-            if (i == 2) {
-                if (numbers != 2 && letters != 2)
-                    return false;
-            }
-            if (i == 4) {
-                if ((numbers != 2 || letters != 2) && (numbers != 4))
-                    return false;
-            }
-
-        }
-        return (numbers == 4 && letters == 2);
+        return matcher.find();
     }
 }

@@ -20,13 +20,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.examples.parkingspaces.ParkingNotificationsGrpc;
-import com.examples.parkingspaces.ParkingSpaceAdministrationGrpc;
 import com.examples.parkingspaces.ParkingSpaceReservation;
 import com.examples.parkingspaces.ParkingSpaceStatus;
 import com.examples.parkingspaces.ParkingSpacesGrpc;
 import com.examples.parkingspaces.ParkingSpacesRq;
-import com.examples.parkingspaces.PlateData;
-import com.examples.parkingspaces.PlateInfo;
 import com.examples.parkingspaces.ReservationCancelResponse;
 import com.examples.parkingspaces.ReservationResponse;
 import com.examples.parkingspaces.ReservationState;
@@ -47,11 +44,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView info;
     Button slot1, slot2, slot3, slot4, cancelReservation, exit;
     TextView show;
-    //Para conectar ao servidor, encontra o IP na rede local do teu PC e coloca-o aqui
-    final String SERVER_ADDRESS = "192.168.1.158";
+    //IP Of Local Network
+    final String SERVER_ADDRESS = "192.168.0.103"; //"192.168.1.158";
     final int PORT = 50051;
 
-    private ManagedChannel channel;
     private ParkingNotificationsGrpc.ParkingNotificationsStub notification;
 
 
@@ -76,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
 
         disableButtons();
 
-        this.channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
+        ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
                 .usePlaintext()
                 .build();
 
-        this.notification = ParkingNotificationsGrpc.newStub(this.channel);
+        this.notification = ParkingNotificationsGrpc.newStub(channel);
 
         initialUpdatePark(channel);
     }
@@ -91,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         parkingSpacesStub.fetchAllParkingStates(ParkingSpacesRq.newBuilder().build(), new StreamObserver<ParkingSpaceStatus>() {
 
-            List<ParkingSpaceStatus> status = new LinkedList<>();
+            final List<ParkingSpaceStatus> status = new LinkedList<>();
 
             @Override
             public void onNext(ParkingSpaceStatus initialState) {
@@ -105,9 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onCompleted() {
-                runOnUiThread(() -> {
-                    startParking(channel, parkingSpacesStub, status);
-                });
+                runOnUiThread(() -> startParking(channel, parkingSpacesStub, status));
             }
         });
     }
@@ -218,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
         cancelReservation.setOnClickListener(v -> clientCancelReservation(async));
 
-        System.out.println("Teste 2");
+        //System.out.println("Test 2");
 
         exit.setOnClickListener(v -> {
             channel.shutdown();
