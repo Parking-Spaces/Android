@@ -103,29 +103,11 @@ public class MainActivity extends AppCompatActivity {
 
             keystore.setCertificateEntry("server", sslCert);
 
-            // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        @Override
-                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
-                                                       String authType) throws CertificateException {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
-                                                       String authType) throws CertificateException {
-                        }
-
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return new java.security.cert.X509Certificate[]{};
-                        }
-                    }
-            };
-
             SSLContext tls = SSLContext.getInstance("TLS");
 
-            tls.init(null, trustAllCerts, null);
+            TrustManager[] tm = buildTrustingManager();
+
+            tls.init(null, tm, null);
 
             channel = OkHttpChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
                     .sslSocketFactory(tls.getSocketFactory())
@@ -153,6 +135,28 @@ public class MainActivity extends AppCompatActivity {
         this.notification = ParkingNotificationsGrpc.newStub(channel);
 
         initialUpdatePark(channel);
+    }
+
+    private TrustManager[] buildTrustingManager() {
+        // Create a trust manager that does not validate certificate chains
+        return new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
+                                                   String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
     }
 
     private void initialUpdatePark(ManagedChannel channel) {
