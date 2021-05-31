@@ -27,17 +27,32 @@ import com.examples.parkingspaces.ParkingSpacesRq;
 import com.examples.parkingspaces.ReservationCancelRequest;
 import com.examples.parkingspaces.ReservationCancelResponse;
 import com.examples.parkingspaces.ReservationResponse;
-import com.examples.parkingspaces.ReservationState;
 import com.examples.parkingspaces.ReserveCancelState;
 import com.examples.parkingspaces.ReserveState;
 import com.examples.parkingspaces.ReserveStatus;
 import com.examples.parkingspaces.SpaceStates;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.okhttp.OkHttpChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
 
@@ -47,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     Button slot1, slot2, slot3, slot4, cancelReservation, exit;
     TextView show;
     //IP Of Local Network
-    final String SERVER_ADDRESS = "192.168.1.158"; //"192.168.1.158";
+    final String SERVER_ADDRESS = "192.168.1.197"; //"192.168.1.158";
     final int PORT = 50051;
 
     private ParkingNotificationsGrpc.ParkingNotificationsStub notification;
@@ -73,9 +88,67 @@ public class MainActivity extends AppCompatActivity {
 
         disableButtons();
 
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
-                .usePlaintext()
-                .build();
+        InputStream inputStream = getResources().openRawResource(R.raw.ca);
+
+        ManagedChannel channel;
+
+        try {
+
+            Certificate sslCert =
+                    CertificateFactory.getInstance("X.509").generateCertificate(inputStream);
+
+            KeyStore keystore = KeyStore.getInstance("PKCS12");
+
+            keystore.load(null, null);
+
+            keystore.setCertificateEntry("server", sslCert);
+
+            // Create a trust manager that does not validate certificate chains
+            final TrustManager[] trustAllCerts = new TrustManager[] {
+                    new X509TrustManager() {
+                        @Override
+                        public void checkClientTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(java.security.cert.X509Certificate[] chain,
+                                                       String authType) throws CertificateException {
+                        }
+
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return new java.security.cert.X509Certificate[]{};
+                        }
+                    }
+            };
+
+            SSLContext tls = SSLContext.getInstance("TLS");
+
+            tls.init(null, trustAllCerts, null);
+
+            channel = OkHttpChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
+                    .sslSocketFactory(tls.getSocketFactory())
+                    .hostnameVerifier((hostname, session) -> true)
+                    .useTransportSecurity()
+                    .build();
+
+        } catch (CertificateException e) {
+            e.printStackTrace();
+            return;
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+            return;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return;
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
         this.notification = ParkingNotificationsGrpc.newStub(channel);
 
@@ -293,7 +366,9 @@ public class MainActivity extends AppCompatActivity {
                 clientWithReservation(plate, slot);
                 dialog.dismiss();
             } else {
-                Toast toast = Toast.makeText(MainActivity.this, "Could Not Made The Reservation With The Plate, Please Try Again.", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(MainActivity.this,
+                        "Could Not Made The Reservation With The Plate, Please Try Again.",
+                        Toast.LENGTH_SHORT);
                 View view = toast.getView();
                 view.setPadding(20, 20, 20, 20);
                 view.setBackgroundResource(R.color.colorPrimaryDark);
@@ -456,7 +531,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /*
         Creates And Displays A Notification When The Slot It´s Occupied Incorrectly
