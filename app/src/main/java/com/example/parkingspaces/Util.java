@@ -27,4 +27,8 @@ public class Util {
 
         return matcher.find();
     }
+
+    public static String formatPlate(String plate) {
+        return plate.replaceAll("-", "");
+    }
 }

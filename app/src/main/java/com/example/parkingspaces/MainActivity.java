@@ -44,11 +44,8 @@ import java.security.cert.CertificateFactory;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import io.grpc.ManagedChannel;
@@ -113,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     .sslSocketFactory(tls.getSocketFactory())
                     .hostnameVerifier((hostname, session) -> true)
                     .useTransportSecurity()
+//                    .usePlaintext()
                     .build();
 
         } catch (CertificateException e) {
@@ -161,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialUpdatePark(ManagedChannel channel) {
         ParkingSpacesGrpc.ParkingSpacesStub parkingSpacesStub = ParkingSpacesGrpc.newStub(channel);
-
 
         parkingSpacesStub.fetchAllParkingStates(ParkingSpacesRq.newBuilder().build(), new StreamObserver<ParkingSpaceStatus>() {
 
@@ -342,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             String plate = input.getText().toString();
 
             ParkingSpaceReservation request = ParkingSpaceReservation.newBuilder()
-                    .setLicencePlate(plate)
+                    .setLicencePlate(Util.formatPlate(plate))
                     .setSpaceID(slot).build();
 
             async.attemptToReserveSpace(request, new StreamObserver<ReservationResponse>() {
@@ -383,13 +380,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void clientWithReservation(String plate, int slot) {
 
-        ParkingSpaceReservation reservation = ParkingSpaceReservation.newBuilder().setSpaceID(slot).setLicencePlate(plate).build();
+        ParkingSpaceReservation reservation = ParkingSpaceReservation.newBuilder().setSpaceID(slot)
+                .setLicencePlate(Util.formatPlate(plate)).build();
 
         notification.subscribeToReservationState(reservation, new StreamObserver<ReserveStatus>() {
 
             @Override
             public void onNext(ReserveStatus state) {
-                System.out.println("Received reservation update");
+                System.out.println("Received reservation update " + state.getState());
                 runOnUiThread(() -> handleState(state));
             }
 
@@ -515,7 +513,9 @@ public class MainActivity extends AppCompatActivity {
                                       String input) {
 
         ReservationCancelRequest reservation = ReservationCancelRequest.newBuilder()
-                .setLicensePlate(input).build();
+                .setLicensePlate(Util.formatPlate(input)).build();
+
+        System.out.println("Sent reservation cancel request");
 
         async.cancelSpaceReservation(reservation, new StreamObserver<ReservationCancelResponse>() {
             @Override

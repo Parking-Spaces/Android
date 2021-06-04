@@ -14,6 +14,9 @@ service ParkingSpaces {
 
   //Attempt to reserve a parking space in the parking lot
   rpc attemptToReserveSpace(ParkingSpaceReservation) returns (ReservationResponse);
+  
+  //Check the current space reserved by a license plate
+  rpc checkReserveStatus(LicensePlate) returns (ParkingSpaceStatus);
 
   //Cancel the reservation for a space
   rpc cancelSpaceReservation(ReservationCancelRequest) returns (ReservationCancelResponse);
@@ -28,7 +31,26 @@ service ParkingNotifications {
   //Subscribe to the state of a certain, already made reservation.
   //If someone parks in the space or you park in another space, there will be a notification immediately
   rpc subscribeToReservationState(ParkingSpaceReservation) returns (stream ReserveStatus);
+  
+  //Registers a license plate reader
+  rpc registerPlateReader(stream PlateReaderResult) returns (stream PlateReadRequest);
 }
+
+message PlateReaderResult {
+
+  int32 spaceID = 1;
+  
+  bool registration = 2;
+  
+  string plate = 3;
+
+};
+
+message PlateReadRequest {
+
+   int32 spaceID = 1;
+
+};
 
 enum SpaceStates {
   OCCUPIED = 0;
@@ -49,11 +71,16 @@ enum ReservationState {
   RESERVE_CANCELLED_PARKED_SOMEWHERE_ELSE = 2;
   RESERVE_CONCLUDED = 3;
   RESERVE_CANCELLED_EXPIRED = 4;
+  RESERVE_OCCUPIED=5;
 };
 
 enum ReserveCancelState {
   CANCELLED = 0;
   NO_RESERVATION_FOR_PLATE = 1;
+}
+
+message LicensePlate {
+  string licensePlate = 1;
 }
 
 message ParkingSpaceReservation {
@@ -111,7 +138,6 @@ service ParkingSpaceAdministration {
   rpc isPlateInParkingLot(PlateInfo) returns (PlateData);
 
   rpc currentlyInParkingLot(E) returns (stream PlateData);
-
   //TODO: Add more administrative RPCs
 
 }
