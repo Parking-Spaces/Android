@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     Button slot1, slot2, slot3, slot4, cancelReservation, exit;
     TextView show;
     //IP Of Local Network
-    final String SERVER_ADDRESS = "192.168.1.197"; //"192.168.1.158";
+    final String SERVER_ADDRESS = "192.168.10.141"; //"192.168.1.158";
     final int PORT = 50051;
 
     private ParkingNotificationsGrpc.ParkingNotificationsStub notification;
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
             tls.init(null, tm, null);
 
             channel = OkHttpChannelBuilder.forAddress(SERVER_ADDRESS, PORT)
-                    .sslSocketFactory(tls.getSocketFactory())
+                   // .sslSocketFactory(tls.getSocketFactory())
                     .hostnameVerifier((hostname, session) -> true)
-                    .useTransportSecurity()
-//                    .usePlaintext()
+                    //.useTransportSecurity()
+                    .usePlaintext()
                     .build();
 
         } catch (CertificateException e) {
